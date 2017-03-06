@@ -369,7 +369,7 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
         if let cardCell = self.revealedCardCell, self.revealedIndex >= 0 {
             toView.removeFromSuperview()
             self.revealedCardFlipView = toView
-            toView.frame = CGRect(x: 0, y: 0, width: cardCell.frame.width, height: cardCell.frame.height)
+            toView.frame = CGRect(x: self.x, y: 0, width: cardCell.frame.width, height: cardCell.frame.height)
             toView.isHidden = true
             cardCell.addSubview(toView)
             
@@ -453,7 +453,7 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
     
     private var autoscrollDisplayLink: CADisplayLink?
     private var autoscrollDirection: HFCardCollectionScrollDirection = .unknown
-    
+    private var x:CGFloat = 0
     // MARK: Private calculated Variable
     
     private var contentInset: UIEdgeInsets {
@@ -531,7 +531,7 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
         
         self.collectionViewItemCount = self.collectionView!.numberOfItems(inSection: 0)
         self.cardCollectionCellSize = self.generateCellSize()
-        
+        self.x = ((self.collectionView?.frame.size.width)! - self.cardCollectionCellSize.width)/2
         if(self.collectionViewIsInitialized == false) {
             self.initializeCardCollectionViewLayout()
         }
@@ -711,7 +711,7 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
             attribute.alpha = 1.0
         }
         
-        let currentFrame = CGRect(x: 0, y: self.spaceAtTopForBackgroundView + cardHeadHeight * CGFloat(currentIndex), width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
+        let currentFrame = CGRect(x: self.x, y: self.spaceAtTopForBackgroundView + cardHeadHeight * CGFloat(currentIndex), width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
         
         if(self.contentOffsetTop >= 0 && self.contentOffsetTop <= self.spaceAtTopForBackgroundView) {
             attribute.frame = currentFrame
@@ -748,9 +748,9 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
     private func generateRevealedCardAttribute(_ attribute: HFCardCollectionViewLayoutAttributes) {
         attribute.isRevealed = true
         if(self.collectionViewItemCount == 1) {
-            attribute.frame = CGRect.init(x: 0, y: self.contentOffsetTop + self.spaceAtTopForBackgroundView + 0.01 , width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
+            attribute.frame = CGRect.init(x: self.x, y: self.contentOffsetTop + self.spaceAtTopForBackgroundView + 0.01 , width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
         } else {
-            attribute.frame = CGRect.init(x: 0, y: self.contentOffsetTop + 0.01 , width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
+            attribute.frame = CGRect.init(x: self.x, y: self.contentOffsetTop + 0.01 , width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
         }
     }
     
@@ -758,24 +758,24 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
         let index = attribute.indexPath.item
         let currentFrame = CGRect(x: self.collectionView!.frame.origin.x, y: self.cardHeadHeight * CGFloat(index), width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
         let maxY = self.collectionView!.contentOffset.y + self.collectionView!.frame.height
-        let contentFrame = CGRect(x: 0, y: self.collectionView!.contentOffset.y, width: self.collectionView!.frame.width, height: maxY)
+        let contentFrame = CGRect(x: self.x, y: self.collectionView!.contentOffset.y, width: self.collectionView!.frame.width, height: maxY)
         if self.cardCollectionBottomCardsSet.contains(index) {
             let margin: CGFloat = self.bottomCardLookoutMargin
             let baseHeight = (self.collectionView!.frame.height + self.collectionView!.contentOffset.y) - self.contentInsetBottom - (margin * self.bottomCardCount)
             let scale: CGFloat = self.calculateCardScale(forIndex: bottomIndex)
             let yAddition: CGFloat = (self.cardCollectionCellSize.height - (self.cardCollectionCellSize.height * scale)) / 2
             let yPos: CGFloat = baseHeight + (bottomIndex * margin) - yAddition
-            attribute.frame = CGRect.init(x: 0, y: yPos, width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
+            attribute.frame = CGRect.init(x: self.x, y: yPos, width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
             attribute.transform = CGAffineTransform(scaleX: scale, y: scale)
             bottomIndex += 1
         } else if contentFrame.intersects(currentFrame)  {
             attribute.isHidden = true
             attribute.alpha = 0.0
-            attribute.frame = CGRect.init(x: 0, y: maxY, width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
+            attribute.frame = CGRect.init(x: self.x, y: maxY, width: self.cardCollectionCellSize.width, height: self.cardCollectionCellSize.height)
         }else {
             attribute.isHidden = true
             attribute.alpha = 0.0
-            attribute.frame = CGRect(x: 0, y: self.cardHeadHeight * CGFloat(index), width: cardCollectionCellSize.width, height: cardCollectionCellSize.height)
+            attribute.frame = CGRect(x: self.x, y: self.cardHeadHeight * CGFloat(index), width: cardCollectionCellSize.width, height: cardCollectionCellSize.height)
         }
         attribute.isRevealed = false
     }
