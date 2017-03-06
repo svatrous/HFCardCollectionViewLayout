@@ -603,11 +603,17 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
     }
     
     private func generateCellSize() -> CGSize {
-        let width = self.collectionView!.frame.width - (self.contentInset.left + self.contentInset.right)
-        let maxHeight = self.collectionView!.frame.height - (self.bottomCardLookoutMargin * CGFloat(self.bottomNumberOfStackedCards)) - (self.contentInset.top + self.contentInsetBottom) - 2
-        let height = (self.cardMaximumHeight == 0 || self.cardMaximumHeight > maxHeight) ? maxHeight : self.cardMaximumHeight
-        let size = CGSize.init(width: width, height: height)
-        return size
+        
+        let width = (UIApplication.shared.windows.first?.frame.size.width)! - 26*2*(UIApplication.shared.windows.first?.frame.size.width)! / 375
+        let height = 60+32+37+8+(54*width/85)
+        
+        return CGSize(width: width, height: height)
+        
+//        let width = self.collectionView!.frame.width - (self.contentInset.left + self.contentInset.right)
+//        let maxHeight = self.collectionView!.frame.height - (self.bottomCardLookoutMargin * CGFloat(self.bottomNumberOfStackedCards)) - (self.contentInset.top + self.contentInsetBottom) - 2
+//        let height = (self.cardMaximumHeight == 0 || self.cardMaximumHeight > maxHeight) ? maxHeight : self.cardMaximumHeight
+//        let size = CGSize.init(width: width, height: height)
+//        return size
     }
     
     private func generateCardCollectionViewLayoutAttributes() -> [HFCardCollectionViewLayoutAttributes] {
