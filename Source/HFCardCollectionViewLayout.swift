@@ -464,7 +464,7 @@ open class HFCardCollectionViewLayout: UICollectionViewLayout, UIGestureRecogniz
     
     private var contentOffsetTop: CGFloat {
         get {
-            return self.collectionView!.contentOffset.y + self.contentInset.top
+            return -60//self.collectionView!.contentOffset.y + self.contentInset.top
         }
     }
     
